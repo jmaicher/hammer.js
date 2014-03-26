@@ -1110,7 +1110,7 @@ var Detection = Hammer.detection = {
  */
 
 Hammer.gestures.Drag = function() {
-  this.triggered = false;
+  
 };
 Hammer.gestures.Drag.prototype = {
   name     : 'drag',
@@ -1142,6 +1142,7 @@ Hammer.gestures.Drag.prototype = {
     drag_lock_min_distance       : 25
   },
 
+  triggered: false,
   handler  : function dragGesture(ev, inst) {
     // current gesture isnt drag, but dragged is true
     // this means an other gesture is busy. now call dragend
@@ -1455,7 +1456,7 @@ Hammer.gestures.Touch.prototype = {
  */
 
 Hammer.gestures.Transform = function() {
-  this.triggered = false;
+  
 };
 Hammer.gestures.Transform.prototype = {
   name     : 'transform',
@@ -1472,6 +1473,8 @@ Hammer.gestures.Transform.prototype = {
     // ensures that all touches occurred within the instance element
     transform_within_instance: false
   },
+
+  triggered: false,
 
   handler  : function transformGesture(ev, inst) {
     // current gesture isnt drag, but dragged is true

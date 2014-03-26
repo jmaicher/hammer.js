@@ -5,7 +5,7 @@
  */
 
 Hammer.gestures.Transform = function() {
-  this.triggered = false;
+  
 };
 Hammer.gestures.Transform.prototype = {
   name     : 'transform',
@@ -22,6 +22,8 @@ Hammer.gestures.Transform.prototype = {
     // ensures that all touches occurred within the instance element
     transform_within_instance: false
   },
+
+  triggered: false,
 
   handler  : function transformGesture(ev, inst) {
     // current gesture isnt drag, but dragged is true
