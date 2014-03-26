@@ -110,6 +110,9 @@ function testEventData(name, ev) {
     // has gesture object
     ok(_.isObject(ev.gesture), 'ev.gesture');
 
+    // gesture holds reference to hammer instance
+    ok(ev.gesture.instance === hammertime);
+
     // EVENT_START|MOVE|END
     ok(ev.gesture.eventType, 'ev.gesture.eventType');
 

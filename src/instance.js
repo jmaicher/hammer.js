@@ -51,10 +51,19 @@ Hammer.Instance.prototype = {
    * @returns {Hammer.Instance}
    */
   on: function onEvent(gesture, handler) {
-    var gestures = gesture.split(' ');
+    var gestures = gesture.split(' ')
+      , self = this
+      , filter;
+
     Utils.each(gestures, function(gesture) {
-      this.element.addEventListener(gesture, handler, false);
-      this.eventHandlers.push({ gesture: gesture, handler: handler });
+      // only handle gesture events recognized by this instance
+      filter = function(evt) {
+        if(evt.gesture && evt.gesture.instance === self) {
+          handler.apply(this, arguments);
+        }
+      };
+      this.element.addEventListener(gesture, filter, false);
+      this.eventHandlers.push({ gesture: gesture, handler: handler, filter: filter});
     }, this);
     return this;
   },
@@ -68,10 +77,16 @@ Hammer.Instance.prototype = {
    */
   off: function offEvent(gesture, handler) {
     var gestures = gesture.split(' ')
+      , gestureHandler = this.findGestureHandler(handler)
       , i, eh;
-    Utils.each(gestures, function(gesture) {
-      this.element.removeEventListener(gesture, handler, false);
 
+    // handler not registered => do nothing
+    if(!gestureHandler) { return; }
+
+    Utils.each(gestures, function(gesture) {
+      // remove wrapped handler from element
+      this.element.removeEventListener(gesture, gestureHandler.filter, false);
+      
       // remove the event handler from the internal list
       for(i=-1; (eh=this.eventHandlers[++i]);) {
         if(eh.gesture === gesture && eh.handler === handler) {
@@ -145,5 +160,23 @@ Hammer.Instance.prototype = {
     Event.unbindDom(this.element, Hammer.EVENT_TYPES[EVENT_START], this.eventStartHandler);
 
     return null;
+
+  },
+
+
+  /**
+   * Find gesture handler object by handler
+   * @param   {Function}    handler
+   * @returns {Object}
+   */
+  findGestureHandler: function(handler) {
+    var gestureHandler;
+    for (var i = 0, j = this.eventHandlers.length; i < j; i++) {
+      gestureHandler = this.eventHandlers[i];
+      if(gestureHandler.handler === handler) {
+        return gestureHandler;
+      }
+    }
   }
+
 };

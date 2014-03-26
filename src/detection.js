@@ -187,6 +187,7 @@ var Detection = Hammer.detection = {
     this.getInterimData(ev);
 
     Utils.extend(ev, {
+      instance: cur.inst,
       startEvent: startEv,
       
       deltaTime : delta_time,
